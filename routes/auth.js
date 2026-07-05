@@ -79,54 +79,113 @@ router.post("/login", login);
 router.get("/me" ,authMiddleware,  getMe);
 
 
-// router.get(
-//   "/admin",
-//   authMiddleware,
-//   roleMiddleware("admin"),
-//   adminController
-// );
-
-
-// router.patch(
-//   "/tickets/:id/status",
-//   authMiddleware,
-//   roleMiddleware("agent", "admin"),
-//   updateTicketStatus
-// );
-
-
-
-// router.post(
-//   "/tickets",
-//   authMiddleware,
-//   roleMiddleware("customer"),
-//   createTicket
-// );
-// this section is comment
-
+/**
+ * @swagger
+ * /api/auth/admin-test:
+ *   get:
+ *     summary: Admin Test Route
+ *     tags: [Authentication]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Admin access successful
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: Welcome Admin
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden - Admin access only
+ */
 router.get(
   "/admin-test",
   authMiddleware,
   roleMiddleware("admin"),
   (req, res) => {
     res.json({
-       success: true,
-       message: "Welcome Admin",
-     });
-   }
- );
+      success: true,
+      message: "Welcome Admin",
+    });
+  }
+);
 
-
-
+/**
+ * @swagger
+ * /api/auth/forgot-password:
+ *   post:
+ *     summary: Send password reset email
+ *     tags: [Authentication]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: vijay@gmail.com
+ *     responses:
+ *       200:
+ *         description: Password reset link sent successfully
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: Password reset link sent to your email
+ *       404:
+ *         description: User not found
+ */
 router.post(
   "/forgot-password",
   forgotPassword
 );
 
+/**
+ * @swagger
+ * /api/auth/reset-password/{token}:
+ *   post:
+ *     summary: Reset user password
+ *     tags: [Authentication]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Password reset token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - password
+ *             properties:
+ *               password:
+ *                 type: string
+ *                 example: NewPassword123
+ *     responses:
+ *       200:
+ *         description: Password reset successful
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               message: Password reset successful
+ *       400:
+ *         description: Invalid or expired token
+ */
 router.post(
   "/reset-password/:token",
   resetPassword
-);
-
+);  
 
 export default router;
