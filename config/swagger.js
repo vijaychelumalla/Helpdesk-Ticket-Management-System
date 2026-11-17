@@ -1,6 +1,11 @@
 import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 
+const serverUrl =
+  process.env.BASE_URL ||
+  process.env.RENDER_EXTERNAL_URL ||
+  `http://localhost:${process.env.PORT || 5000}`;
+
 const options = {
   definition: {
     openapi: "3.0.0",
@@ -11,7 +16,11 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:5000",
+        url: serverUrl,
+        description:
+          process.env.NODE_ENV === "production"
+            ? "Production Server"
+            : "Local Development Server",
       },
     ],
   },
